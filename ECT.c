@@ -4,6 +4,8 @@
 
 #define INFINITY 32767
 #define SIZE 6
+#define SOURCE 0
+
 void Dijkstra(int Graph[SIZE][SIZE], int source);
 void show(int source);
 
@@ -20,12 +22,14 @@ int main()
                              {1,0,1,0,1,0},
                              {0,1,0,1,0,1},
                              {0,0,1,0,1,0},
-                             {0,1,0,0,0,1},
+                             {0,1,0,1,0,1},
                              {1,0,1,0,1,0},
                             };
-    int i=0,j=0,n=0;
+    int i=0,j=0,n=0,k=0;
     int MASKED_GRAPH[SIZE][SIZE] = {0};
     int MASKED_SOURCE = 0;
+    int temp = 0;
+    int ID[SIZE][2] = {{0,0},(1,1),{2,2},{3,3},{4,4},{5,5}};
 
     for (i=0;i<SIZE;i++){
         for (j=0;j<SIZE;j++){
@@ -35,16 +39,34 @@ int main()
     }
 
     for (n=0;n<17;n++) {
-        printf("\n\nECT_MASK = %2X\n", ECT_MASK[n]);
+        printf("\n\nECT_MASK = %2X", ECT_MASK[n]);
+        for (k=0;k<SIZE;k++) {
+            ID[k][0] = k;
+            ID[k][1] = k^ECT_MASK[n];
+        }
+        //sort Masked ID
+        for(i=0;i<SIZE;i++){
+            for(j=0;j<SIZE-1-i;j++){
+                if(ID[j][1] > ID[j+1][1]){
+                    temp = ID[j][1];
+                    ID[j][1] = ID[j+1][1];
+                    ID[j+1][1] = temp;
+                    temp = ID[j][0];
+                    ID[j][0] = ID[j+1][0];
+                    ID[j+1][0] = temp;
+                }
+            }
+        }
+        //Create Masked Graph
         for (i=0;i<SIZE;i++){
-            printf("i=%d,XOR=%d\t", i, (i^ECT_MASK[n]));
+            //printf("i=%d,XOR=%d\t", ID[i][0], ID[i][1]);
             for (j=0;j<SIZE;j++){
-                MASKED_GRAPH[(i^ECT_MASK[n])%SIZE][(j^ECT_MASK[n])%SIZE] = GRAPH[i][j];
+                MASKED_GRAPH[ID[i][0]][ID[j][0]] = GRAPH[i][j];
             }
         }
 
-        Dijkstra(MASKED_GRAPH, (0^ECT_MASK[n])%SIZE);
-        show((0^ECT_MASK[n])%SIZE);
+        Dijkstra(MASKED_GRAPH, ID[SOURCE][0]);
+        show(ID[SOURCE][0]);
     }
 }
 
