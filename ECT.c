@@ -29,7 +29,7 @@ int main()
     int MASKED_GRAPH[SIZE][SIZE] = {0};
     int MASKED_SOURCE = 0;
     int temp = 0;
-    int ID[SIZE][2] = {{0,0},(1,1),{2,2},{3,3},{4,4},{5,5}};
+    int ID[SIZE][2] = {{0,0},{1,1},{2,2},{3,3},{4,4},{5,5}};
 
     for (i=0;i<SIZE;i++){
         for (j=0;j<SIZE;j++){
